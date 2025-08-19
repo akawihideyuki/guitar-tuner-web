@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>Guitar Tuner (Web) — Chrome</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header>
+    <h1>Guitar Tuner (Web)</h1>
+    <p class="subtitle">Web Audio API + Auto-correlation（AudioWorklet / Fallback対応）</p>
+  </header>
+
+  <main>
+    <section class="status">
+      <div>
+        <button id="btn-start">マイク開始</button>
+        <button id="btn-stop" disabled>停止</button>
+      </div>
+      <div id="status-text">準備OK。開始を押してね（ChromeのHTTPS/localhostで動作）</div>
+      <div id="error-text" class="error" hidden></div>
+    </section>
+
+    <section class="display">
+      <div class="readouts">
+        <div class="note" id="note">--</div>
+        <div class="freq">
+          <span id="freq">0.00</span> Hz
+        </div>
+        <div class="cents">
+          <span id="cents">0</span> cents
+        </div>
+      </div>
+
+      <div class="meter">
+        <div class="meter-scale">
+          <span>-50</span><span>-25</span><span>0</span><span>+25</span><span>+50</span>
+        </div>
+        <div class="needle" id="needle"></div>
+        <div class="inrange" id="inrange"></div>
+      </div>
+
+      <div class="confidence">
+        信頼度:
+        <div class="bar"><div class="fill" id="conf-bar"></div></div>
+        <span id="conf-val">0%</span>
+      </div>
+    </section>
+
+    <section class="controls">
+      <fieldset>
+        <legend>基準A4</legend>
+        <label><input type="radio" name="a4" value="440" checked> 440</label>
+        <label><input type="radio" name="a4" value="442"> 442</label>
+        <label><input type="radio" name="a4" value="444"> 444</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>設定</legend>
+        <label>バッファ: 
+          <select id="buffer-size">
+            <option value="1024">1024</option>
+            <option value="2048" selected>2048</option>
+            <option value="4096">4096</option>
+          </select>
+        </label>
+        <label>ノイズゲート（dB）:
+          <input type="range" id="noise-db" min="-90" max="-30" step="1" value="-60">
+          <span id="noise-db-val">-60 dB</span>
+        </label>
+        <label>スムージング（0〜0.9）:
+          <input type="range" id="smooth" min="0" max="0.9" step="0.05" value="0.6">
+          <span id="smooth-val">0.60</span>
+        </label>
+        <label>
+          <input type="checkbox" id="hybrid-fft"> ハイブリッドFFTで補正（任意）
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>テストトーン（自己検証用・任意）</legend>
+        <label>
+          <input type="checkbox" id="tone-on"> 内蔵Oscillatorを鳴らす
+        </label>
+        <label>周波数:
+          <input type="range" id="tone-freq" min="55" max="880" step="1" value="110">
+          <span id="tone-freq-val">110 Hz</span>
+        </label>
+        <small>※スピーカーから音が出ます。ハウリング回避のためヘッドホン推奨。</small>
+      </fieldset>
+    </section>
+
+    <section class="help">
+      <details>
+        <summary>ヘルプ / 注意</summary>
+        <ul>
+          <li>マイク使用には <b>HTTPS</b> もしくは <b>localhost</b> が必要です。</li>
+          <li>±5〜10セント以内で針が緑になればほぼ合っています。</li>
+          <li>標準開放弦：E2=82.406 / A2=110.000 / D3=146.832 / G3=196.000 / B3=246.942 / E4=329.628 Hz</li>
+        </ul>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <small>© 2025 Guitar Tuner Prototype</small>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
