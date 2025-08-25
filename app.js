@@ -247,14 +247,15 @@ function updateUI(freq, confidence){
     els.needle.style.transform = `translateX(-50%) rotate(0deg)`;
     els.inrange.style.opacity = 0;
   }else{
-    const {name, oct, ideal, cents} = nearestNoteName(freq, a4);
-    els.note.textContent = `${name}${oct}`;
-    els.freq.textContent = freq.toFixed(2);
-    const centsClamped = clamp(Math.round(cents), -50, 50);
-    els.cents.textContent = (cents>=0?'+':'') + Math.round(cents);
-    // 針（±50cents -> ±45deg）
-    const deg = (centsClamped/50) * 45;
-    els.needle.style.transform = `translateX(-50%) rotate(${deg}deg)`;
+      const {name, oct, ideal, cents} = nearestNoteName(freq, a4);
+      els.note.textContent = `${name}${oct}`;
+      els.freq.textContent = freq.toFixed(2);
+      const centsRounded = Math.round(cents);
+      const centsClamped = clamp(centsRounded, -50, 50);
+      els.cents.textContent = (centsRounded>=0?'+':'') + centsClamped;
+      // 針（±50cents -> ±45deg）
+      const deg = (centsClamped/50) * 45;
+      els.needle.style.transform = `translateX(-50%) rotate(${deg}deg)`;
     // 合ってればグリーン点灯（±5c）
     els.inrange.style.opacity = Math.abs(cents) <= 5 ? 1 : 0;
     els.needle.style.background = Math.abs(cents) <= 5 ? 'var(--good)' : 'var(--warn)';
